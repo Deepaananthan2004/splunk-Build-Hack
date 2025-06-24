@@ -1,0 +1,4 @@
+@echo off
+cd /d "%~dp0"
+streamlit run streamlit_drift_dashboard_multi_feature.py
+pause
