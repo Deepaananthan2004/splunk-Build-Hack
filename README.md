@@ -39,8 +39,7 @@ NumPy	Synthetic data generation
 bash
 Copy
 Edit
-git clone https://github.com/your-username/nct-drift-detection.git
-cd nct-drift-detection
+git clone : https://github.com/Deepaananthan2004/splunk-Build-Hack/
 2. Install dependencies
 bash
 Copy
@@ -59,4 +58,4 @@ Edit
 ├── requirements.txt
 └── README.md
 🙌 Credits
-Built with ❤️ by [Your Name] for NCT Hackathon 2025.
+Built with ❤️ by [Deepa ananthan AR] for Splunk Build Hackathon 2025.
