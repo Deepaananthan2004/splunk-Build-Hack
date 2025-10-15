@@ -1,4 +1,3 @@
-
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -13,7 +12,13 @@ You can control the sensitivity of the drift detector using the slider below.
 """)
 
 # Drift sensitivity slider
-sensitivity = st.slider("Select ADWIN sensitivity (delta)", min_value=0.0001, max_value=0.05, value=0.002, step=0.0005)
+sensitivity = st.slider(
+    "Select ADWIN sensitivity (delta)",
+    min_value=0.0001,
+    max_value=0.05,
+    value=0.002,
+    step=0.0005
+)
 
 # Generate synthetic data
 days = 200
@@ -33,30 +38,46 @@ adwin = ADWIN(delta=sensitivity)
 drift_indices = []
 
 for i, score in enumerate(df['engagement_score']):
-    adwin.update(score)
-    if adwin.change_detected:
+    drift = adwin.update(score)  # returns True if drift detected
+    if drift:
         drift_indices.append(i)
 
-# Plot the engagement score with drift markers
+# Plot engagement score and drift points
 fig = go.Figure()
-fig.add_trace(go.Scatter(x=df['date'], y=df['engagement_score'], mode='lines+markers',
-                         name='Engagement Score', line=dict(color='royalblue')))
+fig.add_trace(go.Scatter(
+    x=df['date'],
+    y=df['engagement_score'],
+    mode='lines+markers',
+    name='Engagement Score',
+    line=dict(color='royalblue')
+))
 
-# Add actual drift reference
-fig.add_vline(x=df['date'][drift_day], line=dict(color='orange', dash='dash'), annotation_text="Simulated Drift", annotation_position="top left")
+# Add simulated drift marker
+fig.add_vline(
+    x=df['date'][drift_day],
+    line=dict(color='orange', dash='dash'),
+    annotation_text="Simulated Drift",
+    annotation_position="top left"
+)
 
-# Add detected drift points
+# Add detected drift markers
 for idx in drift_indices:
-    fig.add_vline(x=df['date'][idx], line=dict(color='red', dash='dot'), opacity=0.7)
+    fig.add_vline(
+        x=df['date'][idx],
+        line=dict(color='red', dash='dot'),
+        opacity=0.7
+    )
 
-fig.update_layout(title="ADWIN Drift Detection in User Engagement",
-                  xaxis_title="Date",
-                  yaxis_title="Engagement Score",
-                  template="plotly_white")
+fig.update_layout(
+    title="ADWIN Drift Detection in User Engagement",
+    xaxis_title="Date",
+    yaxis_title="Engagement Score",
+    template="plotly_white"
+)
 
 st.plotly_chart(fig, use_container_width=True)
 
-# Show drift events table
+# Show drift events
 if drift_indices:
     st.subheader("🔍 Detected Drift Events")
     st.dataframe(df.iloc[drift_indices].reset_index(drop=True))
